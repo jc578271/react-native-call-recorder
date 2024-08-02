@@ -1,5 +1,4 @@
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
-  android:description="accessibility_service_description"
   android:packageNames="com.callrecorder"
   android:accessibilityEventTypes="typeAllMask"
   android:accessibilityFlags="flagDefault"

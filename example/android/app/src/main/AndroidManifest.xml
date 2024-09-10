@@ -48,17 +48,8 @@
       </intent-filter>
     </activity>
 
-<!--    <receiver-->
-<!--      android:name="com.callrecorder.CallReceiver"-->
-<!--      android:exported="true">-->
-<!--      <intent-filter>-->
-<!--        <action android:name="android.intent.action.PHONE_STATE" />-->
-<!--        <action android:name="android.intent.action.NEW_OUTGOING_CALL" />-->
-<!--      </intent-filter>-->
-<!--    </receiver>-->
-
     <service
-      android:name="com.callrecorder.RecordCallModule"
+      android:name="com.callrecorder.RecordAccessibilityService"
       android:enabled="true"
       android:exported="true"
       android:label="@string/app_name"

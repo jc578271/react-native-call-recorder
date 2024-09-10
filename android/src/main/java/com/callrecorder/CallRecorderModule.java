@@ -1,7 +1,11 @@
 package com.callrecorder;
 
 import androidx.annotation.NonNull;
+
+import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.provider.Settings;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
@@ -29,12 +33,14 @@ public class CallRecorderModule extends ReactContextBaseJavaModule {
     super(reactContext);
     this.reactContext = reactContext;
     this.recordCallModule = new RecordCallModule(reactContext);
+    CallReceiver callReceiver = new CallReceiver(reactContext);
 
     IntentFilter filter = new IntentFilter();
     filter.addAction("android.intent.action.PHONE_STATE");
     filter.addAction("android.intent.action.NEW_OUTGOING_CALL");
 
-    reactContext.registerReceiver(this.recordCallModule, filter);
+//    reactContext.registerReceiver(this.recordCallModule, filter);
+    reactContext.registerReceiver(callReceiver, filter);
   }
 
   @Override
@@ -44,94 +50,115 @@ public class CallRecorderModule extends ReactContextBaseJavaModule {
   }
 
 
-   @ReactMethod
-    public void addPhonesWhiteList(ReadableArray phoneWhileList, Promise promise) {
-      if (this.recordCallModule == null) {
-        promise.reject("Error: Set phone whitelist", "recordCallModule is null");
-      } else {
-        for (int i = 0; i < phoneWhileList.size(); i++) {
-          ReadableType type = phoneWhileList.getType(i);
-          if (type.name() != "String") {
-            promise.reject("Phone type", "Phone with index " + i + " has " + type.name() + " type!");
-          } else {
-            this.recordCallModule.whitelist.add(phoneWhileList.getString(i));
-          }
+  @ReactMethod
+  public void addPhonesWhiteList(ReadableArray phoneWhileList, Promise promise) {
+    if (this.recordCallModule == null) {
+      promise.reject("Error: Set phone whitelist", "recordCallModule is null");
+    } else {
+      for (int i = 0; i < phoneWhileList.size(); i++) {
+        ReadableType type = phoneWhileList.getType(i);
+        if (type.name() != "String") {
+          promise.reject("Phone type", "Phone with index " + i + " has " + type.name() + " type!");
+        } else {
+          this.recordCallModule.whitelist.add(phoneWhileList.getString(i));
         }
-        promise.resolve(Arguments.createMap());
       }
+      promise.resolve(Arguments.createMap());
     }
+  }
 
-    @ReactMethod
-    public void clearWhitelist() {
-      this.recordCallModule.whitelist = new ArrayList<String>();
+  @ReactMethod
+  public void clearWhitelist() {
+    this.recordCallModule.whitelist = new ArrayList<String>();
+  }
+
+  @ReactMethod
+  public void getWhiteList(Promise promise) {
+    WritableArray wl = Arguments.createArray();
+    for (int i = 0; i < this.recordCallModule.whitelist.size(); i++) {
+      wl.pushString(this.recordCallModule.whitelist.get(i));
     }
+    WritableMap map = Arguments.createMap();
+    map.putArray("whitelist", wl);
+    promise.resolve(map);
+  }
 
-    @ReactMethod
-    public void getWhiteList(Promise promise) {
-      WritableArray wl = Arguments.createArray();
-      for (int i = 0; i < this.recordCallModule.whitelist.size(); i++) {
-        wl.pushString(this.recordCallModule.whitelist.get(i));
-      }
-      WritableMap map = Arguments.createMap();
-      map.putArray("whitelist", wl);
-      promise.resolve(map);
+  @ReactMethod
+  public void deletePhoneWhiteList(String number, Promise promise) {
+    if (this.recordCallModule.whitelist.contains(number)) {
+      this.recordCallModule.whitelist.remove(number);
+      promise.resolve(this.recordCallModule.whitelist);
+    } else {
+      promise.reject("error", "whitelist not contain number " + number);
     }
+  }
 
-    @ReactMethod
-    public void deletePhoneWhiteList(String number, Promise promise) {
-      if (this.recordCallModule.whitelist.contains(number)) {
-        this.recordCallModule.whitelist.remove(number);
-        promise.resolve(this.recordCallModule.whitelist);
-      } else {
-        promise.reject("error", "whitelist not contain number " + number);
-      }
-    }
-
-    @ReactMethod
-    public void addPhonesBlackList(ReadableArray phoneBlackList, Promise promise) {
-      if (this.recordCallModule == null) {
-        promise.reject("Error: Set phone whitelist", "recordCallModule is null");
-      } else {
-        for (int i = 0; i < phoneBlackList.size(); i++) {
-          ReadableType type = phoneBlackList.getType(i);
-          if (type.name() != "String") {
-            promise.reject("Phone type", "Phone with index " + i + " has " + type.name() + " type!");
-          } else {
-            this.recordCallModule.blacklist.add(phoneBlackList.getString(i));
-          }
+  @ReactMethod
+  public void addPhonesBlackList(ReadableArray phoneBlackList, Promise promise) {
+    if (this.recordCallModule == null) {
+      promise.reject("Error: Set phone whitelist", "recordCallModule is null");
+    } else {
+      for (int i = 0; i < phoneBlackList.size(); i++) {
+        ReadableType type = phoneBlackList.getType(i);
+        if (type.name() != "String") {
+          promise.reject("Phone type", "Phone with index " + i + " has " + type.name() + " type!");
+        } else {
+          this.recordCallModule.blacklist.add(phoneBlackList.getString(i));
         }
-        promise.resolve(Arguments.createMap());
       }
+      promise.resolve(Arguments.createMap());
     }
+  }
 
-    @ReactMethod
-    public void clearBlackList() {
-      this.recordCallModule.blacklist = new ArrayList<String>();
-    }
+  @ReactMethod
+  public void clearBlackList() {
+    this.recordCallModule.blacklist = new ArrayList<String>();
+  }
 
-    @ReactMethod
-    public void deletePhoneBlackList(String number, Promise promise) {
-      if (this.recordCallModule.blacklist.contains(number)) {
-        this.recordCallModule.blacklist.remove(number);
-        promise.resolve(this.recordCallModule.blacklist);
-      } else {
-        promise.reject("error", "whitelist not contain number " + number);
-      }
+  @ReactMethod
+  public void deletePhoneBlackList(String number, Promise promise) {
+    if (this.recordCallModule.blacklist.contains(number)) {
+      this.recordCallModule.blacklist.remove(number);
+      promise.resolve(this.recordCallModule.blacklist);
+    } else {
+      promise.reject("error", "whitelist not contain number " + number);
     }
+  }
 
-    @ReactMethod
-    public void getBlackList(Promise promise) {
-      WritableArray wl = Arguments.createArray();
-      for (int i = 0; i < this.recordCallModule.blacklist.size(); i++) {
-        wl.pushString(this.recordCallModule.blacklist.get(i));
-      }
-      WritableMap map = Arguments.createMap();
-      map.putArray("blacklist", wl);
-      promise.resolve(map);
+  @ReactMethod
+  public void getBlackList(Promise promise) {
+    WritableArray wl = Arguments.createArray();
+    for (int i = 0; i < this.recordCallModule.blacklist.size(); i++) {
+      wl.pushString(this.recordCallModule.blacklist.get(i));
     }
+    WritableMap map = Arguments.createMap();
+    map.putArray("blacklist", wl);
+    promise.resolve(map);
+  }
 
-    @ReactMethod
-    public void switchRecordStatus(Boolean status) {
-      this.recordCallModule.isRecord = status;
-    }
+  @ReactMethod
+  public void switchRecordStatus(Boolean status) {
+    this.recordCallModule.isRecord = status;
+  }
+
+  @ReactMethod
+  public void openAccessibilitySettings() {
+    Context context = getReactApplicationContext();
+    Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    context.startActivity(intent);
+  }
+
+  @ReactMethod
+  public void openSpecificAccessibilitySettings() {
+    Context context = getReactApplicationContext();
+    Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+//    String packageName = context.getPackageName();
+//    String accessibilityService = packageName + "/" + com.callrecorder.service.RecordService.class.getCanonicalName();
+//    intent.putExtra(Settings.EXTRA_ACCESSIBILITY_SERVICES, accessibilityService);
+
+    context.startActivity(intent);
+  }
 }

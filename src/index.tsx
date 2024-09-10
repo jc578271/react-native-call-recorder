@@ -64,6 +64,15 @@ export function getBlackList(): Promise<string[]> {
 export function deletePhoneBlackList(phone: string): Promise<string[]> {
   return CallRecorder.deletePhoneBlackList(phone);
 }
+
 export function switchRecordStatus(status: boolean): void {
   return CallRecorder.switchRecordStatus(status);
+}
+
+export function openAccessibilitySettings(): void {
+  return CallRecorder.openAccessibilitySettings();
+}
+
+export function openSpecificAccessibilitySettings(): void {
+  return CallRecorder.openSpecificAccessibilitySettings();
 }

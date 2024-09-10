@@ -1,8 +1,10 @@
 import * as React from 'react';
 
-import { View, Text, Platform, PermissionsAndroid } from 'react-native';
+import { View, Text, Platform, PermissionsAndroid, Button } from 'react-native';
 import {
   onOutgoingCallRecorded,
+  openAccessibilitySettings,
+  openSpecificAccessibilitySettings,
   removeOutgoingCallRecorded,
   switchRecordStatus,
 } from 'react-native-call-recorder';
@@ -54,6 +56,18 @@ export default function App() {
   return (
     <View>
       <Text>Ok</Text>
+      <Button
+        title={'open'}
+        onPress={() => {
+          openAccessibilitySettings();
+        }}
+      />
+      <Button
+        title={'openSpecificAccessibilitySettings]'}
+        onPress={() => {
+          openSpecificAccessibilitySettings();
+        }}
+      />
     </View>
   );
 }

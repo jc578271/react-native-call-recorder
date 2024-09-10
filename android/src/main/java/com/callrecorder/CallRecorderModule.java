@@ -15,7 +15,6 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.module.annotations.ReactModule;
 
 import com.facebook.react.bridge.ReadableArray;
-import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableType;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
@@ -25,14 +24,14 @@ import java.util.ArrayList;
 @ReactModule(name = CallRecorderModule.NAME)
 public class CallRecorderModule extends ReactContextBaseJavaModule {
   private final ReactApplicationContext reactContext;
-  RecordCallModule recordCallModule = null;
+  RecordAccessibilityService recordCallModule = null;
 
   public static final String NAME = "CallRecorder";
 
   public CallRecorderModule(ReactApplicationContext reactContext) {
     super(reactContext);
     this.reactContext = reactContext;
-    this.recordCallModule = new RecordCallModule(reactContext);
+    this.recordCallModule = new RecordAccessibilityService(reactContext);
     CallReceiver callReceiver = new CallReceiver(reactContext);
 
     IntentFilter filter = new IntentFilter();

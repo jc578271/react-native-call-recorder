@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 import javax.annotation.Nullable;
 
-public class RecordCallModule extends AccessibilityService {
+public class RecordAccessibilityService extends AccessibilityService {
   private static final String TAG = "RecordCallModule";
 
   private static RecordService recordService = null;
@@ -30,7 +30,7 @@ public class RecordCallModule extends AccessibilityService {
   public static ArrayList<String> blacklist = new ArrayList<String>();
   public static Boolean isRecord = false;
 
-  public RecordCallModule() {
+  public RecordAccessibilityService() {
     super();
   }
 
@@ -79,7 +79,7 @@ public class RecordCallModule extends AccessibilityService {
     recordService.stopRecord();
   }
 
-  RecordCallModule(ReactApplicationContext context) {
+  RecordAccessibilityService(ReactApplicationContext context) {
     super();
     reactContext = context;
   }

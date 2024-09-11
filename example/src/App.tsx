@@ -2,11 +2,13 @@ import * as React from 'react';
 
 import { View, Text, Platform, PermissionsAndroid, Button } from 'react-native';
 import {
+  downloadAndLoadModel,
   onOutgoingCallRecorded,
   openAccessibilitySettings,
   openSpecificAccessibilitySettings,
   removeOutgoingCallRecorded,
   switchRecordStatus,
+  transcribeWav,
 } from 'react-native-call-recorder';
 import { Dirs, FileSystem } from 'react-native-file-access';
 import { useCallback } from 'react';
@@ -63,9 +65,34 @@ export default function App() {
         }}
       />
       <Button
-        title={'openSpecificAccessibilitySettings]'}
+        title={'openSpecificAccessibilitySettings'}
         onPress={() => {
           openSpecificAccessibilitySettings();
+        }}
+      />
+      <Button
+        title={'download'}
+        onPress={async () => {
+          console.log('download');
+          try {
+            await downloadAndLoadModel(
+              'https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip'
+            );
+          } catch (e) {
+            console.log(e);
+          }
+
+          console.log('done');
+        }}
+      />
+      <Button
+        title={'convert to text'}
+        onPress={async () => {
+          console.log('convert to text');
+          const a = await transcribeWav(
+            '/data/user/0/com.callrecorderexample/files/record-outgoing-1726025791422.wav'
+          );
+          console.log('a', a);
         }}
       />
     </View>

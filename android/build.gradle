@@ -52,7 +52,9 @@ android {
   defaultConfig {
     minSdkVersion getExtOrIntegerDefault("minSdkVersion")
     targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
-
+    ndk {
+      abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+    }
   }
 
   buildTypes {
@@ -82,5 +84,8 @@ dependencies {
   // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
+  implementation 'com.alphacephei:vosk-android:0.3.32'  // Older version of Vosk
+  implementation 'net.java.dev.jna:jna:5.13.0'           // Older version of JNA
+  implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 }
 

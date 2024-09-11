@@ -76,3 +76,11 @@ export function openAccessibilitySettings(): void {
 export function openSpecificAccessibilitySettings(): void {
   return CallRecorder.openSpecificAccessibilitySettings();
 }
+
+export async function transcribeWav(wavFilePath: string): Promise<string> {
+  return CallRecorder.transcribeWav(wavFilePath);
+}
+
+export async function downloadAndLoadModel(modelUrl: string): Promise<void> {
+  return CallRecorder.downloadAndLoadModel(modelUrl);
+}

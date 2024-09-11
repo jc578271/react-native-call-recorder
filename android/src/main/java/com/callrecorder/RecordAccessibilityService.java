@@ -86,7 +86,7 @@ public class RecordAccessibilityService extends AccessibilityService {
 
   private void startRecord(String name, String start) {
     recordService = new RecordService();
-    recordService.setFileName(name + start.replaceAll("[^a-zA-Z0-9-_\\.]", "_") + ".mp3");
+    recordService.setFileName(name + start.replaceAll("[^a-zA-Z0-9-_\\.]", "_") + ".wav");
     recordService.setPath(reactContext.getFilesDir().getPath());
     recordService.startRecord();
   }

@@ -2,7 +2,7 @@
   "name": "react-native-call-recorder",
   "version": "0.1.0",
   "description": "react-native-call-recorder",
-  "main": "lib/commonjs/index",
+  "main": "src/index.tsx",
   "module": "lib/module/index",
   "types": "lib/typescript/src/index.d.ts",
   "react-native": "src/index",
@@ -31,7 +31,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
-    "prepare": "bob build",
+    "build": "bob build",
     "release": "release-it"
   },
   "keywords": [

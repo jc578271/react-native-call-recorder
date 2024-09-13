@@ -81,6 +81,22 @@ export async function transcribeWav(wavFilePath: string): Promise<string> {
   return CallRecorder.transcribeWav(wavFilePath);
 }
 
-export async function downloadAndLoadModel(modelUrl: string): Promise<void> {
+export async function downloadAndLoadModel(modelUrl: string): Promise<string> {
   return CallRecorder.downloadAndLoadModel(modelUrl);
+}
+
+export async function getModelAvailable(modelUrl: string): Promise<boolean> {
+  return CallRecorder.getModelAvailable(modelUrl);
+}
+
+export async function getCurrentModel(): Promise<string> {
+  return CallRecorder.getCurrentModel();
+}
+
+export async function getModels(): Promise<string[]> {
+  return CallRecorder.getModels();
+}
+
+export async function loadModel(modelName: string): Promise<string> {
+  return CallRecorder.loadModel(modelName);
 }

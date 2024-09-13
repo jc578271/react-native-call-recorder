@@ -1,17 +1,28 @@
 import * as React from 'react';
 
-import { View, Text, Platform, PermissionsAndroid, Button } from 'react-native';
 import {
-  downloadAndLoadModel,
+  View,
+  Text,
+  Platform,
+  PermissionsAndroid,
+  Button,
+  // FlatList,
+} from 'react-native';
+import {
+  // downloadAndLoadModel,
+  getCurrentModel,
+  getModelAvailable,
+  // getModels,
+  // loadModel,
   onOutgoingCallRecorded,
   openAccessibilitySettings,
   openSpecificAccessibilitySettings,
   removeOutgoingCallRecorded,
   switchRecordStatus,
-  transcribeWav,
+  // transcribeWav,
 } from 'react-native-call-recorder';
 import { Dirs, FileSystem } from 'react-native-file-access';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export default function App() {
   const readFile = useCallback(async (filepath: string) => {
@@ -31,6 +42,7 @@ export default function App() {
         'android.permission.WRITE_EXTERNAL_STORAGE',
         'android.permission.READ_EXTERNAL_STORAGE',
         'android.permission.READ_MEDIA_AUDIO',
+        // 'android.permission.POST_NOTIFICATIONS',
       ]).then();
     switchRecordStatus(true);
 
@@ -55,9 +67,26 @@ export default function App() {
       removeOutgoingCallRecorded();
     };
   }, []);
+
+  const irl =
+    'https://alphacephei.com/vosk/models/vosk-model-en-us-0.22-lgraph.zip';
+
+  const [modelAvailable, setModelAvailable] = useState(false);
+  const [currentModel, setCurrentModel] = useState('');
+  // const [models, setModels] = useState<string[]>([]);
+  useEffect(() => {
+    getModelAvailable(irl).then((res) => {
+      setModelAvailable(res);
+    });
+    getCurrentModel().then((res) => {
+      setCurrentModel(res);
+    });
+  }, []);
+
   return (
     <View>
-      <Text>Ok</Text>
+      <Text>Model available: {modelAvailable ? 'true' : 'false'}</Text>
+      <Text>Current Model: {currentModel}</Text>
       <Button
         title={'open'}
         onPress={() => {
@@ -70,31 +99,64 @@ export default function App() {
           openSpecificAccessibilitySettings();
         }}
       />
-      <Button
-        title={'download'}
-        onPress={async () => {
-          console.log('download');
-          try {
-            await downloadAndLoadModel(
-              'https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip'
-            );
-          } catch (e) {
-            console.log(e);
-          }
+      {/*<Button*/}
+      {/*  title={'download'}*/}
+      {/*  onPress={async () => {*/}
+      {/*    console.log('download');*/}
+      {/*    try {*/}
+      {/*      setCurrentModel(await downloadAndLoadModel(irl));*/}
+      {/*    } catch (e) {*/}
+      {/*      console.log(e);*/}
+      {/*    }*/}
 
-          console.log('done');
-        }}
-      />
-      <Button
-        title={'convert to text'}
-        onPress={async () => {
-          console.log('convert to text');
-          const a = await transcribeWav(
-            '/data/user/0/com.callrecorderexample/files/record-outgoing-1726025791422.wav'
-          );
-          console.log('a', a);
-        }}
-      />
+      {/*    console.log('done');*/}
+      {/*  }}*/}
+      {/*/>*/}
+      {/*<Button*/}
+      {/*  title={'convert to text'}*/}
+      {/*  onPress={async () => {*/}
+      {/*    console.log('convert to text');*/}
+      {/*    const a = await transcribeWav(*/}
+      {/*      Dirs.SDCardDir + '/Download/New_Real_Conversation_Lessons.wav'*/}
+      {/*    );*/}
+      {/*    console.log('a', a);*/}
+      {/*  }}*/}
+      {/*/>*/}
+      {/*<Button*/}
+      {/*  title={'get models'}*/}
+      {/*  onPress={async () => {*/}
+      {/*    const a = await getModels();*/}
+      {/*    setModels(a);*/}
+      {/*    console.log('models: ', a);*/}
+      {/*  }}*/}
+      {/*/>*/}
+      {/*<FlatList*/}
+      {/*  data={models}*/}
+      {/*  renderItem={({ item }) => (*/}
+      {/*    <Button*/}
+      {/*      title={item}*/}
+      {/*      onPress={async () => {*/}
+      {/*        const a = await loadModel(item);*/}
+      {/*        setCurrentModel(a);*/}
+      {/*      }}*/}
+      {/*    />*/}
+      {/*  )}*/}
+      {/*/>*/}
+      {/*<Button*/}
+      {/*  title={'load files in sdcard'}*/}
+      {/*  onPress={async () => {*/}
+      {/*    try {*/}
+      {/*      if (Dirs.SDCardDir != null) {*/}
+      {/*        const result = await FileSystem.ls(Dirs.SDCardDir + '/Download');*/}
+      {/*        console.log('result', result);*/}
+      {/*      }*/}
+      {/*      const result = await FileSystem.ls(Dirs.DocumentDir);*/}
+      {/*      console.log('result', result);*/}
+      {/*    } catch (e) {*/}
+      {/*      console.log('error', e);*/}
+      {/*    }*/}
+      {/*  }}*/}
+      {/*/>*/}
     </View>
   );
 }
